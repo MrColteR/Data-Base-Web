@@ -43,7 +43,7 @@ export class EditSupplierModal extends Component{
                 >
                     <Modal.Header clooseButton>
                         <Modal.Title id="contained-modal-title-vcenter">
-                            Изменение поставщика
+                            Изменение степик
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -52,33 +52,33 @@ export class EditSupplierModal extends Component{
                                 <Form onSubmit={this.handleSumbit}>
                                     
                                     <Form.Group controlId="SupplierID">
-                                        <Form.Label>ID Поставщика</Form.Label>
+                                        <Form.Label>ID поставки</Form.Label>
                                         <Form.Control type="text" name="SupplierID"required
                                         disabled
-                                        defaultValue={this.props.depid}
+                                        defaultValue={this.props.supid}
                                         placeholder="Введите ID"/>
                                     </Form.Group>
 
 
                                     <Form.Group controlId="SupplierName">
-                                        <Form.Label>Имя поставщика</Form.Label>
+                                        <Form.Label>Имя</Form.Label>
                                         <Form.Control type="text" name="SupplierName"required
-                                        defaultValue={this.props.depname}
+                                        defaultValue={this.props.supname}
                                         placeholder="Введите имя"/>
                                     </Form.Group>
 
                                     <Form.Group controlId="SupplierAddress">
-                                        <Form.Label>Адрес поставщика</Form.Label>
+                                        <Form.Label>Адрес</Form.Label>
                                         <Form.Control type="text" name="SupplierAddress"required
-                                        defaultValue={this.props.depaddress}
+                                        defaultValue={this.props.supaddress}
                                         placeholder="Введите адрес"/>
                                     </Form.Group>
 
                                     <Form.Group controlId="SupplierPhone">
-                                        <Form.Label>Номер поставщика</Form.Label>
+                                        <Form.Label>Телефон</Form.Label>
                                         <Form.Control type="text" name="SupplierPhone"required
-                                        defaultValue={this.props.depphone}
-                                        placeholder="Введите номер"/>
+                                        defaultValue={this.props.supphone}
+                                        placeholder="Введите телефон"/>
                                     </Form.Group>
 
                                     <Form.Group>

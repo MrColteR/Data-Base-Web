@@ -91,7 +91,7 @@ export class HistoryPrice extends Component{
                 <ButtonToolbar>
                     <Button variant='primary'
                     onClick={()=>this.setState({addModalShow:true})}>
-                    Добавить деталь    
+                    Добавить историю    
                     </Button>
 
                     <AddHistoryPriceModal show={this.state.addModalShow}

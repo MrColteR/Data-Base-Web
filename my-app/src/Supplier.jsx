@@ -7,14 +7,14 @@ export class Supplier extends Component{
     
     constructor(props){
        super(props);
-       this.state={deps:[], addModalShow:false, editModalShow:false} 
+       this.state={sups:[], addModalShow:false, editModalShow:false} 
     }
 
     refreshList(){
         fetch(process.env.REACT_APP_API+'supplier')
         .then(response=>response.json())
         .then(data=>{
-            this.setState({deps:data});
+            this.setState({sups:data});
         });
     }
 
@@ -26,9 +26,9 @@ export class Supplier extends Component{
         this.refreshList();
     }
 
-    deleteSupplier(depid){
+    deleteSupplier(supid){
         if(window.confirm('Вы уверены?')){
-            fetch(process.env.REACT_APP_API+'supplier/'+ depid,{
+            fetch(process.env.REACT_APP_API+'historyprice/'+ supid,{
                 method: 'DELETE',
                 header:{'Accept':'application/json',
                 'Content-Type':'application/json'}
@@ -37,7 +37,7 @@ export class Supplier extends Component{
     }
 
     render(){
-        const {deps, depid, depname, depaddress, depphone}=this.state;
+        const {sups, supid, supname, supaddress, supphone}=this.state;
         let addModalClose=()=>this.setState({addModalShow:false});
         let editModalClose=()=>this.setState({editModalShow:false});
         return(
@@ -45,7 +45,7 @@ export class Supplier extends Component{
                 <Table className="mt-4" striped bordered hover size="sm">
                     <thead>
                         <tr>
-                            <th>ID поставщика</th>
+                            <th>ID поставки</th>
                             <th>Имя</th>
                             <th>Адрес</th>
                             <th>Телефон</th>
@@ -53,30 +53,30 @@ export class Supplier extends Component{
                         </tr>
                     </thead>
                     <tbody>
-                        {deps.map(dep=>
-                        <tr key={dep.SupplierID}>
-                            <td>{dep.SupplierID}</td>
-                            <td>{dep.Name}</td>
-                            <td>{dep.Address}</td>  
-                            <td>{dep.Phone}</td>
+                        {sups.map(sup=>
+                        <tr key={sup.SupplierID}>
+                            <td>{sup.SupplierID}</td>
+                            <td>{sup.Name}</td>
+                            <td>{sup.Address}</td>  
+                            <td>{sup.Phone}</td>
                             <td>
 <ButtonToolbar>
-    <Button className="mr-2" variant="success" 
-    onClick={()=>this.setState({editModalShow:true, depid:dep.SupplierID, depname:dep.Name, depaddress:dep.Address, depphone:dep.Phone})}>
+    <Button className="mr-2" variant="success"
+    onClick={()=>this.setState({editModalShow:true,supid:sup.SupplierID, supname:sup.Name, supaddress:sup.Address, supphone:sup.Phone})}>
     Изменить
     </Button>
 
     <Button className="mr-2" variant="danger"
-    onClick={()=>this.deleteSupplier(dep.SupplierID)}>
+    onClick={()=>this.deleteSupplier(sup.SupplierID)}>
     Удалить
     </Button>
     
     <EditSupplierModal show={this.state.editModalShow}
     onHide={editModalClose}
-    depid={depid}
-    depname={depname}
-    depaddress={depaddress}
-    depphone={depphone}/>
+    supid={supid}
+    supname={supname}
+    supaddress={supaddress}
+    supphone={supphone}/>
 
 
 </ButtonToolbar>
@@ -92,7 +92,7 @@ export class Supplier extends Component{
                     </Button>
 
                     <AddSupplierModal show={this.state.addModalShow}
-                    onHide={addModalClose}/>
+                    onHide={addModalClose}></AddSupplierModal>
 
                     
                 </ButtonToolbar>

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Болеслав\\source\\repos\\site2\\site2\\Site2.csproj": {}
+    "C:\\Users\\Болеслав\\Desktop\\gg\\site2\\site2\\Site2.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Болеслав\\source\\repos\\site2\\site2\\Site2.csproj": {
+    "C:\\Users\\Болеслав\\Desktop\\gg\\site2\\site2\\Site2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Болеслав\\source\\repos\\site2\\site2\\Site2.csproj",
+        "projectUniqueName": "C:\\Users\\Болеслав\\Desktop\\gg\\site2\\site2\\Site2.csproj",
         "projectName": "Site2",
-        "projectPath": "C:\\Users\\Болеслав\\source\\repos\\site2\\site2\\Site2.csproj",
+        "projectPath": "C:\\Users\\Болеслав\\Desktop\\gg\\site2\\site2\\Site2.csproj",
         "packagesPath": "C:\\Users\\Болеслав\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Болеслав\\source\\repos\\site2\\site2\\obj\\",
+        "outputPath": "C:\\Users\\Болеслав\\Desktop\\gg\\site2\\site2\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",

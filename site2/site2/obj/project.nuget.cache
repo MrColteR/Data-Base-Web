@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uZF5L4M6xPvl9FqVLwejLbvBcLjqQvDZOylUJR9qqmZ7/4u7VsPOCihwp2TSEbKWN3zwFSYZRpK1dcWIEG0eaQ==",
+  "dgSpecHash": "nh1xKQ0Iy9cOUODCVvStJy0OC5xqZTXwR26aWwoXrrMzwDwHJvWyfSmGLK7R/jOOkgVwm8q5Qb6VDUjun/Mqxw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Болеслав\\source\\repos\\site2\\site2\\Site2.csproj",
+  "projectFilePath": "C:\\Users\\Болеслав\\Desktop\\gg\\site2\\site2\\Site2.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Болеслав\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\3.1.9\\microsoft.aspnetcore.jsonpatch.3.1.9.nupkg.sha512",
     "C:\\Users\\Болеслав\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\3.1.9\\microsoft.aspnetcore.mvc.newtonsoftjson.3.1.9.nupkg.sha512",
