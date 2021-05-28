@@ -45,11 +45,11 @@ export class Details extends Component{
                 <Table className="mt-4" striped bordered hover size="sm">
                     <thead>
                         <tr>
-                            <th>DetailsID</th>
-                            <th>Article</th>
-                            <th>Price</th>
-                            <th>Note</th>
-                            <th>Name</th>
+                            <th>ID детали</th>
+                            <th>Артикул</th>
+                            <th>Цена</th>
+                            <th>Описание</th>
+                            <th>Название</th>
                             <th>Настройка</th>
                         </tr>
                     </thead>

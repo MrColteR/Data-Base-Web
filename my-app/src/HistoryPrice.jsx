@@ -45,11 +45,11 @@ export class HistoryPrice extends Component{
                 <Table className="mt-4" striped bordered hover size="sm">
                     <thead>
                         <tr>
-                            <th>HistoryID</th>
-                            <th>DateOfChangePrice</th>
-                            <th>NewPrice</th>
-                            <th>SupplierID</th>
-                            <th>DetailsID</th>
+                            <th>ID истории</th>
+                            <th>Дата изменения цены</th>
+                            <th>Новая цена</th>
+                            <th>ID поставщика</th>
+                            <th>ID детали</th>
                             <th>Настройка</th>
                         </tr>
                     </thead>

@@ -46,10 +46,10 @@ export class Supply extends Component{
                  <Table className="mt-4" striped bordered hover size="sm">
                      <thead>
                          <tr>
-                             <th>SupplyID</th>
-                             <th>Amount</th>
-                             <th>Date</th>
-                             <th>SupplierID</th>
+                             <th>ID поставки</th>
+                             <th>Кол-во</th>
+                             <th>Дата</th>
+                             <th>ID поставщика</th>
                              <th>Настройка</th>
                          </tr>
                      </thead>

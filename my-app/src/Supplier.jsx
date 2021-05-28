@@ -45,10 +45,10 @@ export class Supplier extends Component{
                 <Table className="mt-4" striped bordered hover size="sm">
                     <thead>
                         <tr>
-                            <th>SupplierID</th>
-                            <th>Name</th>
-                            <th>Address</th>
-                            <th>Phone</th>
+                            <th>ID поставщика</th>
+                            <th>Имя</th>
+                            <th>Адрес</th>
+                            <th>Телефон</th>
                             <th>Настройка</th>
                         </tr>
                     </thead>

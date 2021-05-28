@@ -12,16 +12,16 @@ export class Navigation extends Component{
                         Home
                     </NavLink>
                     <NavLink className="d-inline p-2 bg-dark text-white" to="/supplier">
-                        Supplier
+                        Поставщик
                     </NavLink>
                     <NavLink className="d-inline p-2 bg-dark text-white" to="/supply">
-                        Supply
+                        Поставка
                     </NavLink>
                     <NavLink className="d-inline p-2 bg-dark text-white" to="/details">
-                        Details
+                        Деталь
                     </NavLink>
                     <NavLink className="d-inline p-2 bg-dark text-white" to="/historyprice">
-                        History Price
+                        История
                     </NavLink>
                 </Nav>
                 </Navbar.Collapse>
