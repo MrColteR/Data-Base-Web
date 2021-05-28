@@ -1,0 +1,897 @@
+CREATE TABLE [DetailInDelivery]
+( 
+	[Number]             integer  NOT NULL ,
+	[SupplyID]           integer  NOT NULL ,
+	[HistoryID]          integer  NOT NULL ,
+	[DetailsID]          integer  NOT NULL 
+)
+go
+
+ALTER TABLE [DetailInDelivery]
+	ADD CONSTRAINT [XPKДеталь_в_поставке] PRIMARY KEY  CLUSTERED ([Number] ASC,[SupplyID] ASC,[HistoryID] ASC,[DetailsID] ASC)
+go
+
+CREATE TABLE [Details]
+( 
+	[DetailsID]          integer  NOT NULL  IDENTITY ,
+	[Article]            integer  NULL ,
+	[Price]              integer  NOT NULL ,
+	[Note]               varchar(20)  NOT NULL ,
+	[Name]               varchar(20)  NOT NULL 
+)
+go
+
+ALTER TABLE [Details]
+	ADD CONSTRAINT [XPKДетали] PRIMARY KEY  CLUSTERED ([DetailsID] ASC)
+go
+
+CREATE TABLE [HistoryPrice]
+( 
+	[HistoryID]          integer  NOT NULL  IDENTITY ,
+	[DateOfChangePrice]  datetime  NULL ,
+	[NewPrice]           integer  NULL ,
+	[SupplierID]         integer  NOT NULL ,
+	[DetailsID]          integer  NULL 
+)
+go
+
+ALTER TABLE [HistoryPrice]
+	ADD CONSTRAINT [XPKИстория_цены] PRIMARY KEY  CLUSTERED ([HistoryID] ASC)
+go
+
+CREATE TABLE [Supplier]
+( 
+	[SupplierID]         integer  NOT NULL  IDENTITY ,
+	[Name]               varchar(20)  NULL ,
+	[Address]            varchar(20)  NULL ,
+	[Phone]              varchar(20)  NULL 
+)
+go
+
+ALTER TABLE [Supplier]
+	ADD CONSTRAINT [XPKПоставщик] PRIMARY KEY  CLUSTERED ([SupplierID] ASC)
+go
+
+CREATE TABLE [Supply]
+( 
+	[SupplyID]           integer  NOT NULL ,
+	[Amount]             integer  NULL ,
+	[Date]               datetime  NULL ,
+	[SupplierID]         integer  NOT NULL 
+)
+go
+
+ALTER TABLE [Supply]
+	ADD CONSTRAINT [XPKПоставки] PRIMARY KEY  CLUSTERED ([SupplyID] ASC)
+go
+
+
+ALTER TABLE [DetailInDelivery]
+	ADD CONSTRAINT [R_8] FOREIGN KEY ([SupplyID]) REFERENCES [Supply]([SupplyID])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [DetailInDelivery]
+	ADD CONSTRAINT [R_9] FOREIGN KEY ([HistoryID]) REFERENCES [HistoryPrice]([HistoryID])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [DetailInDelivery]
+	ADD CONSTRAINT [R_10] FOREIGN KEY ([DetailsID]) REFERENCES [Details]([DetailsID])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [HistoryPrice]
+	ADD CONSTRAINT [R_12] FOREIGN KEY ([SupplierID]) REFERENCES [Supplier]([SupplierID])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [HistoryPrice]
+	ADD CONSTRAINT [R_13] FOREIGN KEY ([DetailsID]) REFERENCES [Details]([DetailsID])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [Supply]
+	ADD CONSTRAINT [R_11] FOREIGN KEY ([SupplierID]) REFERENCES [Supplier]([SupplierID])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+CREATE TRIGGER tD_DetailInDelivery ON DetailInDelivery FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on DetailInDelivery */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Details  DetailInDelivery on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="0003e1a7", PARENT_OWNER="", PARENT_TABLE="Details"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_10", FK_COLUMNS="DetailsID" */
+    IF EXISTS (SELECT * FROM deleted,Details
+      WHERE
+        /* %JoinFKPK(deleted,Details," = "," AND") */
+        deleted.DetailsID = Details.DetailsID AND
+        NOT EXISTS (
+          SELECT * FROM DetailInDelivery
+          WHERE
+            /* %JoinFKPK(DetailInDelivery,Details," = "," AND") */
+            DetailInDelivery.DetailsID = Details.DetailsID
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last DetailInDelivery because Details exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* HistoryPrice  DetailInDelivery on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="HistoryPrice"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_9", FK_COLUMNS="HistoryID" */
+    IF EXISTS (SELECT * FROM deleted,HistoryPrice
+      WHERE
+        /* %JoinFKPK(deleted,HistoryPrice," = "," AND") */
+        deleted.HistoryID = HistoryPrice.HistoryID AND
+        NOT EXISTS (
+          SELECT * FROM DetailInDelivery
+          WHERE
+            /* %JoinFKPK(DetailInDelivery,HistoryPrice," = "," AND") */
+            DetailInDelivery.HistoryID = HistoryPrice.HistoryID
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last DetailInDelivery because HistoryPrice exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* Supply  DetailInDelivery on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Supply"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_8", FK_COLUMNS="SupplyID" */
+    IF EXISTS (SELECT * FROM deleted,Supply
+      WHERE
+        /* %JoinFKPK(deleted,Supply," = "," AND") */
+        deleted.SupplyID = Supply.SupplyID AND
+        NOT EXISTS (
+          SELECT * FROM DetailInDelivery
+          WHERE
+            /* %JoinFKPK(DetailInDelivery,Supply," = "," AND") */
+            DetailInDelivery.SupplyID = Supply.SupplyID
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last DetailInDelivery because Supply exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_DetailInDelivery ON DetailInDelivery FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on DetailInDelivery */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insNumber integer, 
+           @insSupplyID integer, 
+           @insHistoryID integer, 
+           @insDetailsID integer,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Details  DetailInDelivery on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00040f3d", PARENT_OWNER="", PARENT_TABLE="Details"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_10", FK_COLUMNS="DetailsID" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(DetailsID)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,Details
+        WHERE
+          /* %JoinFKPK(inserted,Details) */
+          inserted.DetailsID = Details.DetailsID
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update DetailInDelivery because Details does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* HistoryPrice  DetailInDelivery on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="HistoryPrice"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_9", FK_COLUMNS="HistoryID" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(HistoryID)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,HistoryPrice
+        WHERE
+          /* %JoinFKPK(inserted,HistoryPrice) */
+          inserted.HistoryID = HistoryPrice.HistoryID
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update DetailInDelivery because HistoryPrice does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* Supply  DetailInDelivery on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Supply"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_8", FK_COLUMNS="SupplyID" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(SupplyID)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,Supply
+        WHERE
+          /* %JoinFKPK(inserted,Supply) */
+          inserted.SupplyID = Supply.SupplyID
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update DetailInDelivery because Supply does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_Details ON Details FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on Details */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Details  HistoryPrice on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00021154", PARENT_OWNER="", PARENT_TABLE="Details"
+    CHILD_OWNER="", CHILD_TABLE="HistoryPrice"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="DetailsID" */
+    IF EXISTS (
+      SELECT * FROM deleted,HistoryPrice
+      WHERE
+        /*  %JoinFKPK(HistoryPrice,deleted," = "," AND") */
+        HistoryPrice.DetailsID = deleted.DetailsID
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Details because HistoryPrice exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* Details  DetailInDelivery on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Details"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_10", FK_COLUMNS="DetailsID" */
+    IF EXISTS (
+      SELECT * FROM deleted,DetailInDelivery
+      WHERE
+        /*  %JoinFKPK(DetailInDelivery,deleted," = "," AND") */
+        DetailInDelivery.DetailsID = deleted.DetailsID
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Details because DetailInDelivery exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_Details ON Details FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on Details */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insDetailsID integer,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Details  HistoryPrice on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="0002442e", PARENT_OWNER="", PARENT_TABLE="Details"
+    CHILD_OWNER="", CHILD_TABLE="HistoryPrice"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="DetailsID" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DetailsID)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,HistoryPrice
+      WHERE
+        /*  %JoinFKPK(HistoryPrice,deleted," = "," AND") */
+        HistoryPrice.DetailsID = deleted.DetailsID
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Details because HistoryPrice exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* Details  DetailInDelivery on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Details"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_10", FK_COLUMNS="DetailsID" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(DetailsID)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,DetailInDelivery
+      WHERE
+        /*  %JoinFKPK(DetailInDelivery,deleted," = "," AND") */
+        DetailInDelivery.DetailsID = deleted.DetailsID
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Details because DetailInDelivery exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_HistoryPrice ON HistoryPrice FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on HistoryPrice */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* HistoryPrice  DetailInDelivery on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00037732", PARENT_OWNER="", PARENT_TABLE="HistoryPrice"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_9", FK_COLUMNS="HistoryID" */
+    IF EXISTS (
+      SELECT * FROM deleted,DetailInDelivery
+      WHERE
+        /*  %JoinFKPK(DetailInDelivery,deleted," = "," AND") */
+        DetailInDelivery.HistoryID = deleted.HistoryID
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete HistoryPrice because DetailInDelivery exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* Details  HistoryPrice on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Details"
+    CHILD_OWNER="", CHILD_TABLE="HistoryPrice"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="DetailsID" */
+    IF EXISTS (SELECT * FROM deleted,Details
+      WHERE
+        /* %JoinFKPK(deleted,Details," = "," AND") */
+        deleted.DetailsID = Details.DetailsID AND
+        NOT EXISTS (
+          SELECT * FROM HistoryPrice
+          WHERE
+            /* %JoinFKPK(HistoryPrice,Details," = "," AND") */
+            HistoryPrice.DetailsID = Details.DetailsID
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last HistoryPrice because Details exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* Supplier  HistoryPrice on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Supplier"
+    CHILD_OWNER="", CHILD_TABLE="HistoryPrice"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="SupplierID" */
+    IF EXISTS (SELECT * FROM deleted,Supplier
+      WHERE
+        /* %JoinFKPK(deleted,Supplier," = "," AND") */
+        deleted.SupplierID = Supplier.SupplierID AND
+        NOT EXISTS (
+          SELECT * FROM HistoryPrice
+          WHERE
+            /* %JoinFKPK(HistoryPrice,Supplier," = "," AND") */
+            HistoryPrice.SupplierID = Supplier.SupplierID
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last HistoryPrice because Supplier exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_HistoryPrice ON HistoryPrice FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on HistoryPrice */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insHistoryID integer,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* HistoryPrice  DetailInDelivery on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="0003df5b", PARENT_OWNER="", PARENT_TABLE="HistoryPrice"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_9", FK_COLUMNS="HistoryID" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(HistoryID)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,DetailInDelivery
+      WHERE
+        /*  %JoinFKPK(DetailInDelivery,deleted," = "," AND") */
+        DetailInDelivery.HistoryID = deleted.HistoryID
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update HistoryPrice because DetailInDelivery exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* Details  HistoryPrice on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Details"
+    CHILD_OWNER="", CHILD_TABLE="HistoryPrice"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="DetailsID" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(DetailsID)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,Details
+        WHERE
+          /* %JoinFKPK(inserted,Details) */
+          inserted.DetailsID = Details.DetailsID
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    select @nullcnt = count(*) from inserted where
+      inserted.DetailsID IS NULL
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update HistoryPrice because Details does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* Supplier  HistoryPrice on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Supplier"
+    CHILD_OWNER="", CHILD_TABLE="HistoryPrice"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="SupplierID" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(SupplierID)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,Supplier
+        WHERE
+          /* %JoinFKPK(inserted,Supplier) */
+          inserted.SupplierID = Supplier.SupplierID
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update HistoryPrice because Supplier does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_Supplier ON Supplier FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on Supplier */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Supplier  HistoryPrice on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="0001e1c1", PARENT_OWNER="", PARENT_TABLE="Supplier"
+    CHILD_OWNER="", CHILD_TABLE="HistoryPrice"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="SupplierID" */
+    IF EXISTS (
+      SELECT * FROM deleted,HistoryPrice
+      WHERE
+        /*  %JoinFKPK(HistoryPrice,deleted," = "," AND") */
+        HistoryPrice.SupplierID = deleted.SupplierID
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Supplier because HistoryPrice exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* Supplier  Supply on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Supplier"
+    CHILD_OWNER="", CHILD_TABLE="Supply"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_11", FK_COLUMNS="SupplierID" */
+    IF EXISTS (
+      SELECT * FROM deleted,Supply
+      WHERE
+        /*  %JoinFKPK(Supply,deleted," = "," AND") */
+        Supply.SupplierID = deleted.SupplierID
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Supplier because Supply exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_Supplier ON Supplier FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on Supplier */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insSupplierID integer,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Supplier  HistoryPrice on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00024845", PARENT_OWNER="", PARENT_TABLE="Supplier"
+    CHILD_OWNER="", CHILD_TABLE="HistoryPrice"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="SupplierID" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(SupplierID)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,HistoryPrice
+      WHERE
+        /*  %JoinFKPK(HistoryPrice,deleted," = "," AND") */
+        HistoryPrice.SupplierID = deleted.SupplierID
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Supplier because HistoryPrice exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* Supplier  Supply on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Supplier"
+    CHILD_OWNER="", CHILD_TABLE="Supply"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_11", FK_COLUMNS="SupplierID" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(SupplierID)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,Supply
+      WHERE
+        /*  %JoinFKPK(Supply,deleted," = "," AND") */
+        Supply.SupplierID = deleted.SupplierID
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Supplier because Supply exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_Supply ON Supply FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on Supply */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* Supply  DetailInDelivery on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="000245b0", PARENT_OWNER="", PARENT_TABLE="Supply"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_8", FK_COLUMNS="SupplyID" */
+    IF EXISTS (
+      SELECT * FROM deleted,DetailInDelivery
+      WHERE
+        /*  %JoinFKPK(DetailInDelivery,deleted," = "," AND") */
+        DetailInDelivery.SupplyID = deleted.SupplyID
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete Supply because DetailInDelivery exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* Supplier  Supply on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Supplier"
+    CHILD_OWNER="", CHILD_TABLE="Supply"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_11", FK_COLUMNS="SupplierID" */
+    IF EXISTS (SELECT * FROM deleted,Supplier
+      WHERE
+        /* %JoinFKPK(deleted,Supplier," = "," AND") */
+        deleted.SupplierID = Supplier.SupplierID AND
+        NOT EXISTS (
+          SELECT * FROM Supply
+          WHERE
+            /* %JoinFKPK(Supply,Supplier," = "," AND") */
+            Supply.SupplierID = Supplier.SupplierID
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last Supply because Supplier exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_Supply ON Supply FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on Supply */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insSupplyID integer,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* Supply  DetailInDelivery on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00028be3", PARENT_OWNER="", PARENT_TABLE="Supply"
+    CHILD_OWNER="", CHILD_TABLE="DetailInDelivery"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_8", FK_COLUMNS="SupplyID" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(SupplyID)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,DetailInDelivery
+      WHERE
+        /*  %JoinFKPK(DetailInDelivery,deleted," = "," AND") */
+        DetailInDelivery.SupplyID = deleted.SupplyID
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update Supply because DetailInDelivery exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* Supplier  Supply on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="Supplier"
+    CHILD_OWNER="", CHILD_TABLE="Supply"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_11", FK_COLUMNS="SupplierID" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(SupplierID)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,Supplier
+        WHERE
+          /* %JoinFKPK(inserted,Supplier) */
+          inserted.SupplierID = Supplier.SupplierID
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update Supply because Supplier does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
