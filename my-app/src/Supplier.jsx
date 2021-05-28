@@ -61,7 +61,7 @@ export class Supplier extends Component{
                             <td>{dep.Phone}</td>
                             <td>
 <ButtonToolbar>
-    <Button className="mr-2" variant="success"
+    <Button className="mr-2" variant="success" 
     onClick={()=>this.setState({editModalShow:true, depid:dep.SupplierID, depname:dep.Name, depaddress:dep.Address, depphone:dep.Phone})}>
     Изменить
     </Button>
@@ -92,7 +92,7 @@ export class Supplier extends Component{
                     </Button>
 
                     <AddSupplierModal show={this.state.addModalShow}
-                    onHide={addModalClose}></AddSupplierModal>
+                    onHide={addModalClose}/>
 
                     
                 </ButtonToolbar>
